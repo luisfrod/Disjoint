@@ -18,10 +18,11 @@ variable_names_node_table = {'EndNodes';'Xpoint';'Ypoint';'Layer'};
 endnodes = cell(core+aggregation+edgesl+1, 1);
 endnodes{1}='IT';
 
-%TODO better preallocation
-Xpoint=sparse(core+aggregation+edgesl*aggregation+1,1);
-Ypoint=sparse(core+aggregation+edgesl*aggregation+1,1);
-layern=sparse(core+aggregation+edgesl*aggregation+1,1);
+h=core+aggregation+edgesl*aggregation+1;
+
+Xpoint(h,1)=1;
+Ypoint(h,1)=1;
+layern(h,1)=1;
 
 edgesstart=core*(aggregation+1);
 edges(edgesstart+aggregation*edgesl,2)=1;
