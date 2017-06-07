@@ -18,10 +18,10 @@ function G = graphTopology(topology,varargin)
 %
 
 switch topology
-    case '3Tier'
+    case 'SpineLeaf'
         assert(nargin==4,'Error in number of inputs in 3-Tier topology. Needs three aditional inputs: core, aggregation, edgesl')
         assert(isscalar(varargin{1}) & isscalar(varargin{2}) & isscalar(varargin{3}),'All additional inputs in 3-Tier topology need to be scalars')
-        G=graph3Tier(varargin{1},varargin{2},varargin{3});
+        G=graphSpineLeaf(varargin{1},varargin{2},varargin{3});
     otherwise
         error('Topology not supported. First argument can only be: 3Tier')
 end
