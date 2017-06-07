@@ -2,18 +2,18 @@ function G = graphTopology(topology,varargin)
 %GRAPHTOPOLY Creates a graph with the atributes given 
 %   depending on the topology chosen
 %   topolgy: chooses the topology. Topologies implemented:
-%       3Tier: Based on layers
+%       SpineLeaf
 %       Portland(not implemented)
 %
 %   varagin: arguments used depending on the topology chosen:
-%        3Tier: core, aggregation, edgesl
-%           core: number of core nodes. Each node only connects to Internet in upper layer. 
-%           Will be called C1,C2...
-%           aggregation: number of aggregation nodes. Each node connects to all nodes in core layer.
-%           Will be called A1,A2... 
-%           edgesl: number of edge nodes per aggregation node. Each node connects to only one node 
-%           in aggregation layer. Since taken symmetric, each node in aggregation layer has
-%           the same number of edge nodes. Will be called E1,E2...
+%       SpineLeaf: spine, leaf, hostperleaf
+%           Spine: number of spine nodes. Each node only connects to Internet in upper layer. 
+%           Will be called S1,S2...
+%           Leaf: number of leaf nodes. Each node connects to all nodes in spine layer.
+%           Will be called L1,L2... 
+%           Hostsperleaf: number of hosts per leaf node. Each node connects to only one node 
+%           in leaf layer. Since taken symmetric, each node in leaf layer has
+%           the same number of hosts. Will be called H1,H2...
 %       Portland
 %
 
