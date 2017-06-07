@@ -15,11 +15,9 @@ variable_names_node_table = {'EndNodes';'Xpoint';'Ypoint';'Layer'};
 %TODO topology and layer as categorical at the end, or in struct with number of core, aggregation and edges
 %topology=categorical({'SpineLeaf'});
 
-endnodes = cell(spine+leaf+hostsperleaf+1, 1);
-endnodes{1}='IT';
-
 h=spine+leaf+hostsperleaf*leaf+1;
-
+endnodes = cell(h, 1);
+endnodes{1}='IT';
 Xpoint(h,1)=1;
 Ypoint(h,1)=1;
 layern(h,1)=1;
@@ -47,7 +45,6 @@ for i=1:spine
     edges(i,2)= i+1;
 end
 
-%endnodes = cell(aggregation, 1);
 aggYpos=coreYpos-differenceY;
 differenceX=(differenceX*spine+1)/leaf;
 startX=differenceX/2;
@@ -64,7 +61,6 @@ for i=1:leaf
     end
 end
 
-%endnodes = cell(aggregation, 1);
 edgeYpos=aggYpos-differenceY;
 differenceedgX=(differenceX*leaf+1)/(hostsperleaf*leaf);
 startX=(differenceX*leaf-(differenceedgX*(hostsperleaf*leaf-1)))/2;
