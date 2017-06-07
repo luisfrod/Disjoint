@@ -17,25 +17,26 @@ function G = graphPortland(k)
 %Compute values for topology
 assert(mod(k,2)==0,'Error, k must be an even number.')
 core=(k/2)^2;
-pods=core/2;
+%pods=core/2;
 aggregation=core*2;
-host_per_aggregation=(k^3/4)/aggregation;
+%pods=k;
+ecm=k/2;%host per aggregation
 variable_names_node_table = {'EndNodes';'Xpoint';'Ypoint';'Layer'};
 
 %Compute values for plotting
 differenceX=1;
-startX=0; %Compute startX as the difference between total width and width of present layer divided by 2.
+%startX=0; Compute startX as the difference between total width and width of present layer divided by 2.
 differenceY=1;
 startY=4;
-width=aggregation*host_per_aggregation*differenceX;
+width=aggregation*ecm*differenceX;
 
 %Preallocation
-h=aggregation*2+aggregation*host_per_aggregation+core+1;
+h=aggregation*2+aggregation*ecm+core+1;
 endnodes = cell(h, 1);
 Xpoint(h,1)=1;
 Ypoint(h,1)=1;
 layern(h,1)=1;
-edges(core+aggregation*pods*2+aggregation*host_per_aggregation,2)=1;
+edges(core+3*aggregation*ecm,2)=1;
 
 %Internet layer
 Xpoint(1,1)=width/2;
@@ -63,15 +64,18 @@ posnode=i+1;
 startY=startY-differenceY;
 startX=(width-(aggregation-1)*differenceX)/2;
 count=1;
+countpod=1;
 for i=1:aggregation
     Ypoint(posnode+i,1)=startY;
     layern(posnode+i,1)=2;
     Xpoint(posnode+i,1)=startX+differenceX*(i-1);
     endnodes{posnode+i} = strcat('A', num2str(i));
-    extra=(mod(i,2)==0);
-    for j=2:pods+1
+    if i>countpod*ecm
+        countpod=countpod+1;
+    end
+    for j=2:ecm+1
         edges(posedge+count,1)=posnode+i;
-        edges(posedge+count,2)= j+extra*pods;
+        edges(posedge+count,2)= j+((i-(countpod-1)*ecm)-1)*ecm;
         count=count+1;
     end
 end
@@ -83,15 +87,19 @@ posnode=posnode+i;
 startY=startY-differenceY;
 startX=(width-(aggregation-1)*differenceX)/2;
 count=1;
+countpod=1;
 for i=1:aggregation
     Ypoint(posnode+i,1)=startY;
     layern(posnode+i,1)=3;
     Xpoint(posnode+i,1)=startX+differenceX*(i-1);
     endnodes{posnode+i} = strcat('E', num2str(i));
-    extra=int32(i/pods)-1;
-    for j=1:pods
+    %extra=int32(i/ecm)-1;
+    if i>countpod*ecm
+        countpod=countpod+1;
+    end
+    for j=1:ecm
         edges(posedge+count,1)=posnode+i;
-        edges(posedge+count,2)= posagg+j+extra*pods;
+        edges(posedge+count,2)= posagg+j+(countpod-1)*ecm;
         count=count+1;
     end
 end
@@ -105,13 +113,13 @@ startX=0;
 count=1;
 count2=1;
 for j=1:aggregation
-    for i=1:host_per_aggregation
+    for i=1:ecm
         Ypoint(posnode+count,1)=startY;
         layern(posnode+count,1)=4;
         Xpoint(posnode+count,1)=startX+differenceX*(count-1);
         endnodes{posnode+count} = strcat('H', num2str(count));
         edges(posedge+count,1)=posagg+j;
-        edges(posedge+count,2)=posnode+i+(count2-1)*host_per_aggregation;
+        edges(posedge+count,2)=posnode+i+(count2-1)*ecm;
         count=count+1;
     end
     count2=count2+1;
