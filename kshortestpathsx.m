@@ -1,4 +1,4 @@
-function [paths, cost] = kshortestpathsex(network, stnodes, k, varargin)
+function [paths, cost] = kshortestpathsx(network, stnodes, k, varargin)
 %KSHORTESTPATHS Obtains the K-shortespaths in NETWORK for the source and
 %target nodes contained in STNODES. STNODES can be a cell array of
 %character vectors or a numeric array. STNODES has two columns and as many
