@@ -34,11 +34,11 @@ switch topology
         assert(isscalar(varargin{1}) & isscalar(varargin{2}) & isscalar(varargin{3}),'All additional inputs in SpineLeaf topology need to be scalars')
         G=graphSpineLeaf(varargin{1},varargin{2},varargin{3});
     case 'Portland'
-        assert(nargin==2,'Error in number of inputs in Portland topology. Needs one aditional inputs: k')
+        assert(nargin==2,'Error in number of inputs in Portland topology. Needs one aditional input: k')
         assert(isscalar(varargin{1}),'All additional inputs in Portland topology need to be scalars')
         G=graphPortland(varargin{1});
     otherwise
-        error('Topology not supported. First argument can only be: SpineLeaf')
+        error('Topology not supported. First argument can only be: SpineLeaf Portland')
 end
 end
 

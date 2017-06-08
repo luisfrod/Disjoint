@@ -67,13 +67,14 @@ startX=(differenceX*leaf-(differenceedgX*(hostsperleaf*leaf-1)))/2;
 count=1;
 count2=1;
 for j=1:leaf
+    addj=spine+leaf+1+(count2-1)*hostsperleaf;
     for i=1:hostsperleaf
         Ypoint(spine+leaf+count+1,1)=edgeYpos;
         layern(spine+leaf+count+1,1)=3;
         Xpoint(spine+leaf+count+1,1)=startX+differenceedgX*(count-1);
         endnodes{spine+leaf+count+1} = strcat('H', num2str(count));
         edges(edgesstart+count,1)=spine+1+j;
-        edges(edgesstart+count,2)=spine+leaf+1+i+(count2-1)*hostsperleaf;
+        edges(edgesstart+count,2)=i+addj;
         count=count+1;
     end
     count2=count2+1;

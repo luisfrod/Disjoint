@@ -73,9 +73,10 @@ for i=1:aggregation
     if i>countpod*ecm
         countpod=countpod+1;
     end
+    addj=((i-(countpod-1)*ecm)-1)*ecm;
     for j=2:ecm+1
         edges(posedge+count,1)=posnode+i;
-        edges(posedge+count,2)= j+((i-(countpod-1)*ecm)-1)*ecm;
+        edges(posedge+count,2)= j+addj;
         count=count+1;
     end
 end
@@ -97,9 +98,10 @@ for i=1:aggregation
     if i>countpod*ecm
         countpod=countpod+1;
     end
+    addj=posagg+(countpod-1)*ecm;
     for j=1:ecm
         edges(posedge+count,1)=posnode+i;
-        edges(posedge+count,2)= posagg+j+(countpod-1)*ecm;
+        edges(posedge+count,2)= j+addj;
         count=count+1;
     end
 end
@@ -113,13 +115,14 @@ startX=0;
 count=1;
 count2=1;
 for j=1:aggregation
+    addj=posnode+(count2-1)*ecm;
     for i=1:ecm
         Ypoint(posnode+count,1)=startY;
         layern(posnode+count,1)=4;
         Xpoint(posnode+count,1)=startX+differenceX*(count-1);
         endnodes{posnode+count} = strcat('H', num2str(count));
         edges(posedge+count,1)=posagg+j;
-        edges(posedge+count,2)=posnode+i+(count2-1)*ecm;
+        edges(posedge+count,2)=i+addj;
         count=count+1;
     end
     count2=count2+1;
