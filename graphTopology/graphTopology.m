@@ -7,6 +7,7 @@ function G = graphTopology(flagit,flaghosts,topology,varargin)
 %   topolgy: chooses the topology. Topologies implemented:
 %       SpineLeaf
 %       Portland
+%       VL2
 %   IT: flag to select if the internet node is added or not. True-adds it,
 %       false-doesn't add it.
 %
@@ -31,6 +32,21 @@ function G = graphTopology(flagit,flaghosts,topology,varargin)
 %           Host layer: (k^3/4) nodes. Each node connects to only one node in edge 
 %               layer. Since taken symmetric, each node in edge layer has the same
 %               number of hosts. Will be called H1,H2...
+%       VL2: varargin can be:
+%               k (dc=da=k)
+%               dc, da
+%               dc, da, agg_per_pod(number of aggregation nodes per pod)
+%               Number of nodes is computed by input arguments in layers:
+%           Core layer: da/2 nodes. Each node only connects to Internet in upper layer. 
+%               Will be called C1,C2...
+%           Aggregation layer: dc nodes. This nodes are divided in pods. Each
+%               pode has two aggregation nodes, each connecting to all the core 
+%               nodes. Will be called A1,A2... 
+%           Edge layer: same number as aggregation nodes. Each node connects to all
+%               aggregation nodes in its pod. Will be called E1,E2...
+%           Host layer: 2*dc nodes. Each node connects to only one node in edge 
+%               layer. Since taken symmetric, each node in edge layer has the same
+%               number of hosts. Will be called H1,H2...
 %
 assert(islogical(flagit) & islogical(flaghosts),'First two inputs must be booleans')
 
@@ -46,7 +62,7 @@ switch topology
     case 'VL2'
         G=graphVL2(flagit,flaghosts,varargin{:});
     otherwise
-        error('Topology not supported. First argument can only be: SpineLeaf Portland')
+        error('Topology not supported. First argument can only be: SpineLeaf Portland VL2')
 end
 end
 
