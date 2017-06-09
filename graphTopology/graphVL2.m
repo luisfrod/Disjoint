@@ -32,6 +32,7 @@ if nargin==3
 else
     if nargin==4
         dc=varargin{1};
+        assert(mod(varargin{2},2)==0,'Error, da must be an even number.')
         da=varargin{2};
         %agg_per_pod=2;
     %elseif nargin==5
