@@ -14,76 +14,111 @@ function G=graphSpineLeaf(flagit,flaghosts, spine, leaf, hostsperleaf)
 %
 
 variable_names_node_table = {'EndNodes';'Xpoint';'Ypoint';'Layer'};
+posnode=0;
+it=0;
 
 %TODO topology and layer as categorical at the end, or in struct with number of core, aggregation and edges
 %topology=categorical({'SpineLeaf'});
 
-h=spine+leaf+hostsperleaf*leaf+1;
+%Preallocation
+if flagit
+    it=1;
+    posnode=it;
+end
+if ~flaghosts
+    hostsperleaf=0;
+end
+h=spine+leaf+hostsperleaf*leaf+it;
 endnodes = cell(h, 1);
-endnodes{1}='IT';
 Xpoint(h,1)=1;
 Ypoint(h,1)=1;
 layern(h,1)=1;
-
-edgesstart=spine*(leaf+1);
-edges(edgesstart+leaf*hostsperleaf,2)=1;
+edges(it*spine+spine*leaf+leaf*hostsperleaf,2)=1;
 
 %TODO think of better way to compute first difference and start plotting points
 
+%Compute values for plotting
 differenceX=1;
-startX=0;
+startX=0; %Compute startX as the difference between total width and width of present layer divided by 2.
 differenceY=1;
 startY=3;
-coreYpos=startY-differenceY;
+if spine>leaf
+    big=spine;
+else
+    big=leaf;
+end
+width=(big-1)*differenceX;
 
-Xpoint(1,1)=differenceX+(differenceX*spine-differenceX)/2;
-Ypoint(1,1)=startY;
-layern(1)=0;
+%Internet layer
+if flagit
+    Xpoint(1,1)=width/2;
+    Ypoint(1,1)=startY;
+    layern(1)=0;
+    endnodes{1}='IT';
+end
+
+%Spine layer
+startX=(width-(spine-1)*differenceX)/2;
+startY=startY-differenceY;
 for i=1:spine
-    Ypoint(i+1,1)=coreYpos;
-    Xpoint(i+1,1)=startX+differenceX*i;
-    layern(i+1)=1;
-    endnodes{i+1} = strcat('S', num2str(i));
+    posnode=posnode+1;
+    Ypoint(posnode,1)=startY;
+    Xpoint(posnode,1)=startX+differenceX*(i-1);
+    layern(posnode)=1;
+    endnodes{posnode} = strcat('S', num2str(i));
+    if flagit
     edges(i,1)= 1;
     edges(i,2)= i+1;
+    end
 end
 
-aggYpos=coreYpos-differenceY;
-differenceX=(differenceX*spine+1)/leaf;
-startX=differenceX/2;
-count=1;
+%Leaf layer
+if flagit
+    posedge=i;
+else
+    posedge=0;
+end
+posagg=posnode;
+startY=startY-differenceY;
+startX=(width-(leaf-1)*differenceX)/2;
 for i=1:leaf
-    Ypoint(spine+i+1,1)=aggYpos;
-    layern(spine+i+1,1)=2;
-    Xpoint(spine+i+1,1)=startX+differenceX*(i-1);
-    endnodes{i+spine+1} = strcat('L', num2str(i));
-    for j=2:spine+1
-    edges(spine+count,1)=spine+1+i;
-    edges(spine+count,2)= j;
-    count=count+1;
+    posnode=posnode+1;
+    Ypoint(posnode,1)=startY;
+    layern(posnode,1)=2;
+    Xpoint(posnode,1)=startX+differenceX*(i-1);
+    endnodes{posnode} = strcat('L', num2str(i));
+    for j=it+1:spine+it
+        posedge=posedge+1;
+        edges(posedge,1)=posnode;
+        edges(posedge,2)= j;
     end
 end
 
-edgeYpos=aggYpos-differenceY;
-differenceedgX=(differenceX*leaf+1)/(hostsperleaf*leaf);
-startX=(differenceX*leaf-(differenceedgX*(hostsperleaf*leaf-1)))/2;
-count=1;
-count2=1;
-for j=1:leaf
-    addj=spine+leaf+1+(count2-1)*hostsperleaf;
-    for i=1:hostsperleaf
-        Ypoint(spine+leaf+count+1,1)=edgeYpos;
-        layern(spine+leaf+count+1,1)=3;
-        Xpoint(spine+leaf+count+1,1)=startX+differenceedgX*(count-1);
-        endnodes{spine+leaf+count+1} = strcat('H', num2str(count));
-        edges(edgesstart+count,1)=spine+1+j;
-        edges(edgesstart+count,2)=i+addj;
-        count=count+1;
+%Host layer
+if flaghosts
+    differenceX=width/(hostsperleaf*leaf-1);
+    startY=startY-differenceY;
+    posnode1=posnode;
+    count=1;
+    count2=1;
+    for j=1:leaf
+        addj=posnode1+(count2-1)*hostsperleaf;
+        for i=1:hostsperleaf
+            posnode=posnode+1;
+            Ypoint(posnode,1)=startY;
+            layern(posnode,1)=4;
+            Xpoint(posnode,1)=startX+differenceX*(count-1);
+            endnodes{posnode} = strcat('H', num2str(count));
+            posedge=posedge+1;
+            edges(posedge,1)=posagg+j;
+            edges(posedge,2)=addj+i;
+            count=count+1;
+        end
+        count2=count2+1;
     end
-    count2=count2+1;
 end
-%layer=categorical(layern,0:3,{'internet' 'core' 'aggregation' 'edge'});
-layer=categorical(layern,0:3,{'internet','spine' 'leaf' 'host'});
+
+layer=categorical(layern,0:3,{'internet' 'spine' 'leaf' 'host'});
 NodeTable=table(endnodes,Xpoint,Ypoint,layer,'VariableNames',variable_names_node_table);
 EdgeTable=table(edges,'VariableNames',{'EndNodes'});
 G=graph(EdgeTable,NodeTable);

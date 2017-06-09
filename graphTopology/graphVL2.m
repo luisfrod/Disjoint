@@ -111,7 +111,7 @@ else
     posedge=0;
 end
 posagg=posnode;
-startY=startY-1;
+startY=startY-differenceY;
 startX=(width-(aggregation-1)*differenceX)/2;
 for i=1:aggregation
     posnode=posnode+1;
@@ -127,7 +127,7 @@ for i=1:aggregation
 end
 
 %Edge layer
-startY=startY-1;
+startY=startY-differenceY;
 startX=(width-(TOR-1)*differenceX)/2;
 countpod=1;
 edge_per_pod=TOR/(aggregation/agg_per_pod);
@@ -150,7 +150,7 @@ end
 if flaghosts
     posagg=posagg+aggregation;
     differenceX=width/(ecm*TOR-1);
-    startY=startY-1;
+    startY=startY-differenceY;
     posnode1=posnode;
     count=1;
     count2=1;
