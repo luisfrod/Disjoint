@@ -1,9 +1,14 @@
-function G = graphTopology(topology,varargin)
+function G = graphTopology(flagit,flaghosts,topology,varargin)
 %GRAPHTOPOLY Creates a graph with the atributes given 
 %   depending on the topology chosen
+%Inputs:
+%   flagit: flag to have an internet node or not
+%   flaghosts: flag to have node hosts or not
 %   topolgy: chooses the topology. Topologies implemented:
 %       SpineLeaf
 %       Portland
+%   IT: flag to select if the internet node is added or not. True-adds it,
+%       false-doesn't add it.
 %
 %   varagin: arguments used depending on the topology chosen:
 %       SpineLeaf: spine, leaf, hostperleaf
@@ -27,16 +32,19 @@ function G = graphTopology(topology,varargin)
 %               layer. Since taken symmetric, each node in edge layer has the same
 %               number of hosts. Will be called H1,H2...
 %
+assert(islogical(flagit) & islogical(flaghosts),'First two inputs must be booleans')
 
 switch topology
     case 'SpineLeaf'
-        assert(nargin==4,'Error in number of inputs in SpineLeaf topology. Needs three aditional inputs: spine, leaf, hostperleaf')
+        assert(nargin==6,'Error in number of inputs in SpineLeaf topology. Needs three aditional inputs: spine, leaf, hostperleaf')
         assert(isscalar(varargin{1}) & isscalar(varargin{2}) & isscalar(varargin{3}),'All additional inputs in SpineLeaf topology need to be scalars')
-        G=graphSpineLeaf(varargin{1},varargin{2},varargin{3});
+        G=graphSpineLeaf(flagit,flaghosts,varargin{1},varargin{2},varargin{3});
     case 'Portland'
-        assert(nargin==2,'Error in number of inputs in Portland topology. Needs one aditional input: k')
+        assert(nargin==4,'Error in number of inputs in Portland topology. Needs one aditional input: k')
         assert(isscalar(varargin{1}),'All additional inputs in Portland topology need to be scalars')
-        G=graphPortland(varargin{1});
+        G=graphPortland(flagit,flaghosts, varargin{1});
+    case 'VL2'
+        G=graphVL2(flagit,flaghosts,varargin{:});
     otherwise
         error('Topology not supported. First argument can only be: SpineLeaf Portland')
 end

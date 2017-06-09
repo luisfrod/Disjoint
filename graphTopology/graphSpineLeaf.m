@@ -1,13 +1,16 @@
-function G=graphSpineLeaf(spine, leaf, hostsperleaf)
+function G=graphSpineLeaf(flagit,flaghosts, spine, leaf, hostsperleaf)
 %GRAPHSPINELIEAF Creates a graph with topology spineleaf divided in layers
 %           Function used by Graphtopology
-%   Spine: number of spine nodes. Each node only connects to Internet in upper layer. 
-%       Will be called S1,S2...
-%   Leaf: number of leaf nodes. Each node connects to all nodes in spine layer.
-%       Will be called L1,L2... 
-%   Hostsperleaf: number of hosts per leaf node. Each node connects to only one node 
-%       in leaf layer. Since taken symmetric, each node in leaf layer has
-%       the same number of hosts. Will be called H1,H2...
+%   Inputs:
+%       flagit: flag to have an internet node or not
+%       flaghosts: flag to have node hosts or not
+%       Spine: number of spine nodes. Each node only connects to Internet in upper layer. 
+%           Will be called S1,S2...
+%       Leaf: number of leaf nodes. Each node connects to all nodes in spine layer.
+%           Will be called L1,L2... 
+%       Hostsperleaf: number of hosts per leaf node. Each node connects to only one node 
+%           in leaf layer. Since taken symmetric, each node in leaf layer has
+%           the same number of hosts. Will be called H1,H2...
 %
 
 variable_names_node_table = {'EndNodes';'Xpoint';'Ypoint';'Layer'};
