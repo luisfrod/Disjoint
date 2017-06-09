@@ -34,17 +34,18 @@ else
     if nargin==4
         dc=varargin{1};
         da=varargin{2};
-        agg_per_pod=2;
-    elseif nargin==5
-        dc=varargin{1};
-        da=varargin{2};
-        agg_per_pod=varargin{3};
+        %agg_per_pod=2;
+    %elseif nargin==5
+        %dc=varargin{1};
+        %da=varargin{2};
+        %agg_per_pod=varargin{3};
     else
         error('Incorrect input arguments: has to be ');
     end
     
     core=da/2;
     aggregation=dc;
+    agg_per_pod=aggregation/core;
     TOR=da*dc/4;%edges
     ecm=2*dc;%O 20 o 40
     
