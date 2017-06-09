@@ -12,14 +12,15 @@ function G = graphVL2(flagit,flaghosts,varargin)
 %   Core layer: da/2 nodes. Each node only connects to Internet in upper layer. 
 %       Will be called C1,C2...
 %   Aggregation layer: dc nodes. This nodes are divided in pods. There are
-%       dc/(da/2) pods, each aggregation node connects to all the core 
-%       nodes. Will be called A1,A2... 
+%       2 aggregation nodes per pod, each aggregation node connects to all 
+%       the core nodes. Will be called A1,A2... 
 %   Edge layer: same number as aggregation nodes. Each node connects to all
 %       aggregation nodes in its pod. Will be called E1,E2...
 %   Host layer: 2*dc nodes. Each node connects to only one node in edge 
 %       layer. Since taken symmetric, each node in edge layer has the same
 %       number of hosts. Will be called H1,H2...
 %
+%Luis Félix Rodríguez Cano 2017
 
 %Compute values for topology
 if nargin==3

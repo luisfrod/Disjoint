@@ -4,6 +4,8 @@ function p=plotGraphtopology(G,varargin)
 %       varargin can specificy additional format in which to plot the graph
 %       except for X and Y coordenates and name of nodes. If wanted to
 %       change those better to use the plot function provided by Matlab.
+%
+%Luis Félix Rodríguez Cano 2017
 
 table=G.Nodes;
 X=table.Xpoint';

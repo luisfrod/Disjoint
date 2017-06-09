@@ -12,6 +12,7 @@ function G=graphSpineLeaf(flagit,flaghosts, spine, leaf, hostsperleaf)
 %           in leaf layer. Since taken symmetric, each node in leaf layer has
 %           the same number of hosts. Will be called H1,H2...
 %
+%Luis Félix Rodríguez Cano 2017
 
 variable_names_node_table = {'EndNodes';'Xpoint';'Ypoint';'Layer'};
 posnode=0;
