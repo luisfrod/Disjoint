@@ -27,7 +27,7 @@ if nargin==3
     core=k/2;
     aggregation=k;
     TOR=k^2/4;%edges
-    agg_per_pod=2;
+    %agg_per_pod=2;
     ecm=2*k;%O 20 o 40
 else
     if nargin==4
@@ -45,11 +45,12 @@ else
     
     core=da/2;
     aggregation=dc;
-    agg_per_pod=aggregation/core;
+    %agg_per_pod=aggregation/core;
     TOR=da*dc/4;%edges
     ecm=2*dc;%O 20 o 40
     
 end
+agg_per_pod=2;
 assert(mod(varargin{1},2)==0,'Error, dc or k must be an even number.')
 posnode=0;
 it=0;
