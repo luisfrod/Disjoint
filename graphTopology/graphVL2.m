@@ -7,13 +7,12 @@ function G = graphVL2(flagit,flaghosts,varargin)
 %       varargin can be:
 %           k (dc=da=k)
 %           dc, da
-%           dc, da, agg_per_pod(number of aggregation nodes per pod)
 %
 %   Number of nodes is computed by input arguments in layers:
 %   Core layer: da/2 nodes. Each node only connects to Internet in upper layer. 
 %       Will be called C1,C2...
-%   Aggregation layer: dc nodes. This nodes are divided in pods. Each
-%       pode has two aggregation nodes, each connecting to all the core 
+%   Aggregation layer: dc nodes. This nodes are divided in pods. There are
+%       dc/(da/2) pods, each aggregation node connects to all the core 
 %       nodes. Will be called A1,A2... 
 %   Edge layer: same number as aggregation nodes. Each node connects to all
 %       aggregation nodes in its pod. Will be called E1,E2...
