@@ -56,7 +56,7 @@ switch topology
             assert(isscalar(varargin{1}) & isscalar(varargin{2}) & isscalar(varargin{3}),'All additional inputs in SpineLeaf topology need to be scalars')
             G=graphSpineLeaf(flagit,flaghosts,varargin{1},varargin{2},varargin{3});
         else
-            assert(nargin==5,'Error in number of inputs in SpineLeaf topology. Needs three aditional inputs: spine, leaf')
+            assert(nargin==5 || nargin==6,'Error in number of inputs in SpineLeaf topology. Needs two aditional inputs: spine, leaf')
             assert(isscalar(varargin{1}) & isscalar(varargin{2}),'All additional inputs in SpineLeaf topology need to be scalars')
             G=graphSpineLeaf(flagit,flaghosts,varargin{1},varargin{2});
         end
