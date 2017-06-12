@@ -8,12 +8,10 @@ function p=plotGraphtopology(G,varargin)
 %Luis Félix Rodríguez Cano 2017
 
 table=G.Nodes;
-X=table.Xpoint';
-Y=table.Ypoint';
 if(nargin>1)
-    p=plot(G,'XData',X,'YData',Y,'NodeLabel',G.Nodes.EndNodes,varargin{:});
+    p=plot(G,'XData',table.Xpoint','YData',table.Ypoint','NodeLabel',G.Nodes.EndNodes,varargin{:});
 else
-    p=plot(G,'XData',X,'YData',Y,'NodeLabel',G.Nodes.EndNodes,'Marker','x','NodeColor','r','MarkerSize',10);
+    p=plot(G,'XData',table.Xpoint','YData',table.Ypoint','NodeLabel',G.Nodes.EndNodes,'Marker','x','NodeColor','r','MarkerSize',10);
 
 end
 end
