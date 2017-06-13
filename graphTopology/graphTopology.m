@@ -143,7 +143,7 @@ posnode_leaflayer=posnode;
 %layer=categorical(layern,0:3,{'internet' 'spine' 'leaf' 'host'});
 %NodeTable=table(endnodes,Xpoint,Ypoint,layer,'VariableNames',variable_names_node_table);
 %EdgeTable=table(edges,'VariableNames',{'EndNodes'});
-G=graph(table(edges,'VariableNames',{'EndNodes'}),table(endnodes,Xpoint,Ypoint,categorical(layern,0:3,{'internet' 'spine' 'leaf' 'host'}),'VariableNames',{'EndNodes';'Xpoint';'Ypoint';'Layer'}));
+G=graph(table(edges,'VariableNames',{'EndNodes'}),table(endnodes,Xpoint,Ypoint,categorical(layern,0:3,{'internet' 'spine' 'leaf' 'host'}),'VariableNames',{'Name';'Xpoint';'Ypoint';'Layer'}));
 
 end
 
@@ -241,7 +241,7 @@ edge_per_pod=TOR/(aggregation/agg_per_pod);
 %Host layer
 [endnodes,edges,layern,Xpoint,Ypoint]=host_per_node(flaghosts,endnodes,edges,layern,Xpoint,Ypoint,posnode,posedge,startX,startY,differenceY,width,ecm,TOR,posnode_edgelayer,4);
 
-G=graph(table(edges,'VariableNames',{'EndNodes'}),table(endnodes,Xpoint,Ypoint,categorical(layern,0:4,{'internet' 'core' 'aggregation' 'edge' 'host'}),'VariableNames',{'EndNodes';'Xpoint';'Ypoint';'Layer'}));
+G=graph(table(edges,'VariableNames',{'EndNodes'}),table(endnodes,Xpoint,Ypoint,categorical(layern,0:4,{'internet' 'core' 'aggregation' 'edge' 'host'}),'VariableNames',{'Name';'Xpoint';'Ypoint';'Layer'}));
 
 end
 
@@ -342,7 +342,7 @@ posnode_edgelayer=posnode;
 %Host layer
 [endnodes,edges,layern,Xpoint,Ypoint]=host_per_node(flaghosts,endnodes,edges,layern,Xpoint,Ypoint,posnode,posedge,startX,startY,differenceY,width,ecm,aggregation,posnode_edgelayer,4);
 
-G=graph(table(edges,'VariableNames',{'EndNodes'}),table(endnodes,Xpoint,Ypoint,categorical(layern,0:4,{'internet' 'core' 'aggregation' 'edge' 'host'}),'VariableNames',{'EndNodes';'Xpoint';'Ypoint';'Layer'}));
+G=graph(table(edges,'VariableNames',{'EndNodes'}),table(endnodes,Xpoint,Ypoint,categorical(layern,0:4,{'internet' 'core' 'aggregation' 'edge' 'host'}),'VariableNames',{'Name';'Xpoint';'Ypoint';'Layer'}));
 
 end
 
