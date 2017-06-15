@@ -33,7 +33,7 @@ end
 if ischar(source) && ischar(dest)
     source=findnode(G,source);
     dest=findnode(G,dest);
-elseif isescalar(source) && isescalar(dest)
+elseif isscalar(source) && isscalar(dest)
 else
     error('Second and Third input need to be a string or an index of the matrix');
 end
