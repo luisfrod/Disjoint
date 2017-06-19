@@ -46,9 +46,17 @@ paths = cell(N,1);
 
 for j=1:N
     paths{j}= dijkstra(netCostMatrix, source, dest);
+    if isempty(paths{j})
+        break
+    end
+    %if isempty(paths{j})
+    %    paths=paths{1:j-1,1};
+    %break;
+    %end
     [v, sz]=size(paths{j});
     for i=1:sz-1
         netCostMatrix(paths{j}(i),paths{j}(i+1))= Inf;
+        netCostMatrix(paths{j}(i+1),paths{j}(i))= Inf;
     end
 end
 end
