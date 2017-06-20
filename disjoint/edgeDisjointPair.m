@@ -44,15 +44,15 @@ netCostMatrix(netCostMatrix==0) = Inf;
 %Iterative Pair Edge Disjoint
 
 %Do first dijkstra
-[paths1, totalCost] = dijkstra(netCostMatrix, source, dest);
+[nextpath, totalCost] = dijkstra(netCostMatrix, source, dest);
 
 U=[];
-[sz, v]=size(U);
+[v, sz]=size(nextpath);
 for i=1:sz-1
-    U=[U; paths1(i) paths1(i+1)];
+    U=[U; nextpath(i) nextpath(i+1)];
 end
-    
-for j=1:N
+
+for j=1:N-1
     
     [sz, v]=size(U);
     netCostMatrixchanged = netCostMatrix;
@@ -69,30 +69,29 @@ for j=1:N
     end
      
     %Find Union of both removing interlacing edges
+    
+        %Find interlacing edges
     [v, sz2]=size(nextpath);
-    indexinU=[];
-    notz=[];
+    flagU=true(1,sz);
+    notz=false(v,sz2);
     for i=1:sz
-        flagi=true;
         for z=1:sz2-1
            %sprintf('U-%d %d nextpath-%d %d',U(i,1), U(i,2), nextpath(z), nextpath(z+1))
             if U(i,1)==nextpath(z+1) && U(i,2)==nextpath(z)
-                notz=[notz z];
-                flagi=false;
+                notz(z)=true;
+                flagU(i)=false;
                 break;
             end
         end
-        if flagi
-            indexinU=[indexinU, i];
-        end
     end
     
-    U=U(indexinU,:);
+        %Do the union without interlacing edges
+        
+    U=U(flagU,:);
     
     [v, sz2]=size(nextpath);
     for i=1:sz2-1
-        if i==notz
-            i=i+1;
+        if notz(i)
             continue
         end
         U=[U; nextpath(i) nextpath(i+1)];
@@ -100,13 +99,11 @@ for j=1:N
 end
  
     % Get matrix from paths
-    [v, sz]=size(U);
-    netCostMatrix=zeros(rows, cols);
-    for i=1:v
+    [sz, v]=size(U);
+    netCostMatrix=inf(rows, cols);
+    for i=1:sz
         netCostMatrix(U(i,1),U(i,2))=1;%Since its a spanning tree, and is only garanted that the sum of the cost of the paths is minimum, not one path
     end
-
-    netCostMatrix(netCostMatrix==0) = Inf;
 
 % Out of the loops, find paths out of spanning tree
 paths=edgeDisjointNaiveDijkstra(netCostMatrix,source,dest,N,true);

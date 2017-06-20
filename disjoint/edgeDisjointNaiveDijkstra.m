@@ -47,7 +47,8 @@ paths = cell(N,1);
 for j=1:N
     paths{j}= dijkstra(netCostMatrix, source, dest);
     if isempty(paths{j})
-        break
+        paths=paths(1:j-1,1);
+        break;
     end
     %if isempty(paths{j})
     %    paths=paths{1:j-1,1};
