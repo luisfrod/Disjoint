@@ -8,9 +8,10 @@ function G = graphTopology(flagit,flaghosts,topology,varargin)
 %       SpineLeaf
 %       Portland
 %       VL2
+%       Altoona Facebook
 %
 %   varagin: arguments used depending on the topology chosen:
-%       SpineLeaf: spine, leaf, hostperleaf
+%       SpineLeaf: spine, leaf and if flaghosts is true: hostperleaf
 %           Spine: number of spine nodes. Each node only connects to Internet in upper layer. 
 %           Will be called S1,S2...
 %           Leaf: number of leaf nodes. Each node connects to all nodes in spine layer.
@@ -44,6 +45,25 @@ function G = graphTopology(flagit,flaghosts,topology,varargin)
 %           Host layer: 2*dc nodes. Each node connects to only one node in edge 
 %               layer. Since taken symmetric, each node in edge layer has the same
 %               number of hosts. Will be called H1,H2...
+%       Altoona Facebook:
+%               m: number of pods of edges
+%               n: number of pods of TOR
+%               if flaghosts is true: one additional for the number of hosts per TOR
+%               Number of nodes is computed by input arguments m and n in layers:
+%           Edge/Core layer: 4*m nodes. Each node only connects to Internet in upper layer. 
+%               Will be called E1,E2...
+%           Spine layer: 48*4 nodes. This nodes are divided in 4 pods. Each
+%               pod ha 48 aggregation nodes, all nodes in a pod connect to one node
+%               in each pod in the upper layer, the one with the same index of the pod
+%               in this layer. Will be called S1,S2... 
+%           Fabric layer: 4*n nodes. Each pod has 4 nodes. Each node in a pod connects to all nodes in an
+%               upper layer pod. The upper layer pod with the same index of the respective index
+%               of the node inside the current layer pod. Will be called F1,F2...
+%           TOR layer: 48*n nodes. Each node connects to all fabric nodes in its pod.
+%               Will be called T1,T2...
+%           Host layer: hostperTOR*n nodes. Each node connects to only one node in TOR 
+%               layer. Since taken symmetric, each node in edge layer has the same
+%               number of hosts. Will be called H1,H2...
 %
 %Luis Félix Rodríguez Cano 2017
 
@@ -66,8 +86,12 @@ switch topology
         G=graphPortland(flagit,flaghosts, varargin{1});
     case 'VL2'
         G=graphVL2(flagit,flaghosts,varargin{:});
+    case 'AltoonaFacebook'
+        assert(nargin==5 || nargin==6,'Error in number of inputs in AltoonaFacebook topology. Needs two or three aditional inputs: m pods of edges, n pods of TOR and if flaghosts is true the number of hosts per TOR')
+        assert(isscalar(varargin{1}) & isscalar(varargin{2}),'All additional inputs in AltoonaFacebook topology need to be scalars')
+        G=graphAltoonaFacebook(flagit,flaghosts,varargin{:});
     otherwise
-        error('Topology not supported. Topology can only be: SpineLeaf Portland VL2')
+        error('Topology not supported. Topology can only be: SpineLeaf Portland VL2 AltoonaFacebook')
 end
 end
 
@@ -346,6 +370,108 @@ G=graph(table(edges,'VariableNames',{'EndNodes'}),table(endnodes,Xpoint,Ypoint,c
 
 end
 
+function G = graphAltoonaFacebook(flagit,flaghosts,m,n,varargin)
+%GRAPHALTOONAFACEBOOK Creates a graph with the topology Facebook divided in layers
+%           Function used by Graphtopology
+%   Inputs:
+%       flagit:flag to have an internet node or not
+%       flaghosts:flag to have node hosts or not
+%       m: number of pods of edges
+%       n: number of pods of TOR
+%      if flaghosts is true:
+%       varargin{1} is the number of hosts per TOR
+%   Number of nodes is computed by input arguments m and n in layers:
+%   Edge/Core layer: 4*m nodes. Each node only connects to Internet in upper layer. 
+%       Will be called E1,E2...
+%   Spine layer: 48*4 nodes. This nodes are divided in 4 pods. Each
+%       pod ha 48 aggregation nodes, all nodes in a pod connect to one node
+%       in each pod in the upper layer, the one with the same index of the pod
+%       in this layer. Will be called S1,S2... 
+%   Fabric layer: 4*n nodes. Each pod has 4 nodes. Each node in a pod connects to all nodes in an
+%       upper layer pod. The upper layer pod with the same index of the respective index
+%       of the node inside the current layer pod. Will be called F1,F2...
+%   TOR layer: 48*n nodes. Each node connects to all fabric nodes in its pod.
+%       Will be called T1,T2...
+%   Host layer: hostperTOR*n nodes. Each node connects to only one node in TOR 
+%       layer. Since taken symmetric, each node in edge layer has the same
+%       number of hosts. Will be called H1,H2...
+%
+%Luis Félix Rodríguez Cano 2017
+
+%Compute values for topology
+core=4*m;
+Spines=48*4;
+Fabric=4*n;
+TOR=n*48;
+
+if flaghosts
+    if nargin~=5
+        error('If flaghosts is true the number of hosts per TOR must be specified.');
+    else
+    ecm=varargin{1};%host per TOR
+    end
+else
+    ecm=0;
+end
+
+%Compute values for plotting
+differenceX=1;
+startX=0;% Compute startX as the difference between total width and width of present layer divided by 2.
+differenceY=1;
+startY=5;
+%width=aggregation*ecm*differenceX;
+if m>n
+    width=(core-1)*differenceX;
+else
+    width=(Fabric-1)*differenceX;
+end
+
+if flagit
+    it=1;
+    posnode=it;
+else
+    posnode=0;
+    it=0;
+end
+
+%Preallocation
+[endnodes,layern,Xpoint,Ypoint]=preallocate_nodetablevariables(core+Spines+Fabric+TOR+it+ecm*TOR);
+edges(4*m*48+it*n*4+2*n*48*4+ecm,2)=1;
+
+%Internet layer
+[endnodes,layern,Xpoint,Ypoint]=internet_layer(flagit,endnodes,layern,Xpoint,Ypoint,width,startY);
+
+posnode_corelayer=posnode+1;
+
+%Edge layer
+[endnodes,edges,layern,Xpoint,Ypoint,posnode,startY]=core_layer(flagit,'E',endnodes,edges,layern,Xpoint,Ypoint,posnode,startY,differenceY,differenceX,width,core);
+
+%Spine layer
+if flagit
+    posedge=core;
+else
+    posedge=0;
+end
+posnode_spinelayer=posnode;
+[endnodes,edges,layern,Xpoint,Ypoint,posnode,posedge,startY]=Toindexnodepod_inindexpod_layerbefore('S',endnodes,edges,layern,Xpoint,Ypoint,posnode,posedge,startY,differenceY,width/Spines,width,Spines,48,4,m,posnode_corelayer,2);
+
+%Fabric layer
+posnode_fabriclayer=posnode;
+[endnodes,edges,layern,Xpoint,Ypoint,posnode,posedge,startY]=Topod_eachinpod_layerbefore('F',endnodes,edges,layern,Xpoint,Ypoint,posnode,posedge,startY,differenceY,differenceX,width,Fabric,4,48,posnode_spinelayer,3);
+
+%TOR layer
+posnode_torlayer=posnode;
+[endnodes,edges,layern,Xpoint,Ypoint,posnode,posedge,startY]=Toall_inpod_layerbefore('T',endnodes,edges,layern,Xpoint,Ypoint,posnode,posedge,startY,differenceY,width/TOR,width,TOR,48,4,posnode_fabriclayer,4);
+
+%Host layer
+
+[endnodes,edges,layern,Xpoint,Ypoint]=host_per_node(flaghosts,endnodes,edges,layern,Xpoint,Ypoint,posnode,posedge,startX,startY,differenceY,width,ecm,TOR,posnode_torlayer,5);
+
+G=graph(table(edges,'VariableNames',{'EndNodes'}),table(endnodes,Xpoint,Ypoint,categorical(layern,0:5,{'internet' 'edge' 'spine' 'fabric' 'tor' 'host'}),'VariableNames',{'Name';'Xpoint';'Ypoint';'Layer'}));
+
+end
+
+
 
 function [endnodes,layern,Xpoint,Ypoint]=preallocate_nodetablevariables(nnodes)
     %Preallocates the node table variables taking the total number of nodes
@@ -442,17 +568,19 @@ function [endnodes,edges,layern,Xpoint,Ypoint,posnode,posedge,startY]=Toall_inpo
     
     startY=startY-differenceY;
     startX=(width-(nnodescurrentlayer-1)*differenceX)/2;
-    countpod=1;
-    addj=posnode_upperlayer+(countpod-1)*upper_per_pode;
+    %countpod=1;
+    addj=posnode_upperlayer;
+    limit=current_per_pod;
     for i=1:nnodescurrentlayer
         posnode=posnode+1;
         Ypoint(posnode,1)=startY;
         layern(posnode,1)=nlayer;
         Xpoint(posnode,1)=startX+differenceX*(i-1);
         endnodes{posnode} = strcat(char, num2str(i));
-        if i>countpod*current_per_pod
-            countpod=countpod+1;
+        if i>limit
+            %countpod=countpod+1;
             addj=addj+upper_per_pode;
+            limit=limit+current_per_pod;
         end
         for j=1:upper_per_pode
             posedge=posedge+1;
@@ -461,4 +589,63 @@ function [endnodes,edges,layern,Xpoint,Ypoint,posnode,posedge,startY]=Toall_inpo
         end
     end
 end
+
+function [endnodes,edges,layern,Xpoint,Ypoint,posnode,posedge,startY]=Toindexnodepod_inindexpod_layerbefore(char,endnodes,edges,layern,Xpoint,Ypoint,posnode,posedge,startY,differenceY,differenceX,width,nnodescurrentlayer,current_per_pod,upper_in_pod,npods_upper,posnode_upperlayer,nlayer)
+    %Creates a layer in which all nodes in a pod connect to one node
+    %in each pod in the upper layer, the one with the same index of the pod
+    %in this layer.
+    %Luis Félix Rodríguez Cano 2017
+    
+    startY=startY-differenceY;
+    startX=(width-(nnodescurrentlayer-1)*differenceX)/2;
+    limit=current_per_pod;
+    addj=posnode_upperlayer;
+    for i=1:nnodescurrentlayer
+        posnode=posnode+1;
+        Ypoint(posnode,1)=startY;
+        layern(posnode,1)=nlayer;
+        Xpoint(posnode,1)=startX+differenceX*(i-1);
+        endnodes{posnode} = strcat(char, num2str(i));
+        if i>limit
+            addj=addj+1;
+            limit=limit+current_per_pod;
+        end
+        for j=0:npods_upper-1
+            posedge=posedge+1;
+            edges(posedge,1)=posnode;
+            edges(posedge,2)= j*upper_in_pod+addj;
+        end
+    end
+end
+
+function [endnodes,edges,layern,Xpoint,Ypoint,posnode,posedge,startY]=Topod_eachinpod_layerbefore(char,endnodes,edges,layern,Xpoint,Ypoint,posnode,posedge,startY,differenceY,differenceX,width,nnodescurrentlayer,current_per_pod,upper_per_pode,posnode_upperlayer,nlayer)
+    %Creates a layer in which each node in a pod connects to all nodes in an
+    %upper layer pod. The upper layer pod with the same index of the respective index
+    %of the node inside the current layer pod.
+    %Luis Félix Rodríguez Cano 2017
+    
+    startY=startY-differenceY;
+    startX=(width-(nnodescurrentlayer-1)*differenceX)/2;
+    limit=current_per_pod;
+    count_in_pod=0;
+    for i=1:nnodescurrentlayer
+        posnode=posnode+1;
+        Ypoint(posnode,1)=startY;
+        layern(posnode,1)=nlayer;
+        Xpoint(posnode,1)=startX+differenceX*(i-1);
+        endnodes{posnode} = strcat(char, num2str(i));
+        if i>limit
+            limit=limit+current_per_pod;
+            count_in_pod=0;
+        end
+        plusupper=count_in_pod*upper_per_pode;
+        for j=1:upper_per_pode
+            posedge=posedge+1;
+            edges(posedge,1)=posnode;
+            edges(posedge,2)= j+plusupper+posnode_upperlayer;
+        end
+        count_in_pod=count_in_pod+1;
+    end
+end
+
 
