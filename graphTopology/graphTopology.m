@@ -441,7 +441,7 @@ edges(4*m*48+it*n*4+2*n*48*4+ecm,2)=1;
 %Internet layer
 [endnodes,layern,Xpoint,Ypoint]=internet_layer(flagit,endnodes,layern,Xpoint,Ypoint,width,startY);
 
-posnode_corelayer=posnode+1;
+posnode_corelayer=posnode;
 
 %Edge layer
 [endnodes,edges,layern,Xpoint,Ypoint,posnode,startY]=core_layer(flagit,'E',endnodes,edges,layern,Xpoint,Ypoint,posnode,startY,differenceY,differenceX,width,core);
@@ -599,7 +599,7 @@ function [endnodes,edges,layern,Xpoint,Ypoint,posnode,posedge,startY]=Toindexnod
     startY=startY-differenceY;
     startX=(width-(nnodescurrentlayer-1)*differenceX)/2;
     limit=current_per_pod;
-    addj=posnode_upperlayer;
+    addj=posnode_upperlayer+1;
     for i=1:nnodescurrentlayer
         posnode=posnode+1;
         Ypoint(posnode,1)=startY;
