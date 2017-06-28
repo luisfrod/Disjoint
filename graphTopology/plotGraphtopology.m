@@ -9,9 +9,9 @@ function p=plotGraphtopology(G,varargin)
 
 table=G.Nodes;
 if(nargin>1)
-    p=plot(G,'XData',table.Xpoint','YData',table.Ypoint','NodeLabel',G.Nodes.Name,varargin{:});
+    p=plot(G,'XData',table.Xpoint','YData',table.Ypoint','NodeLabel',table.Name,varargin{:});
 else
-    p=plot(G,'XData',table.Xpoint','YData',table.Ypoint','NodeLabel',G.Nodes.Name,'Marker','x','NodeColor','r','MarkerSize',10);
+    p=plot(G,'XData',table.Xpoint','YData',table.Ypoint','NodeLabel',table.Name,'Marker','x','NodeColor','r','MarkerSize',10);
 
 end
 end
