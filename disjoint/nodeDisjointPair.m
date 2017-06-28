@@ -1,5 +1,5 @@
-function paths=edgeDisjointPair(G,source,dest,N,matrix)
-%EDGEDISJOINTPAIR Obtains N edge-disjoint paths in G for the 
+function paths=nodeDisjointPair(G,source,dest,N,matrix)
+%EDGEDISJOINTPAIR Obtains N node-disjoint paths in G for the 
 %source and dest nodes using LBA algorithm.
 %       Inputs:
 %           G: Can be the graph of the topology or the netCostMatrix.
@@ -53,8 +53,43 @@ for i=1:sz-1
 end
 
 for j=1:N-1
-    
+    [U, stop]=iterationdisjointpair(U, netCostMatrix, source, dest);
+    if stop
+        break;
+    end
+end
+ 
+    % Get matrix from paths
     [sz, v]=size(U);
+    netCostMatrix=inf(rows, cols);
+    for i=1:sz
+        netCostMatrix(U(i,1),U(i,2))=1;%Since its a spanning tree, and is only guaranted that the sum of the cost of the paths is minimum, not one path
+    end
+
+% Out of the loops, find paths out of spanning tree
+paths=nodeDisjointNaiveDijkstra(netCostMatrix,source,dest,N,true);
+
+while size(paths)<N
+    [U, stop]=iterationdisjointpair(U, netCostMatrix, source, dest);
+    if stop
+        return;
+    end
+     % Get matrix from paths
+    [sz, v]=size(U);
+    netCostMatrix=inf(rows, cols);
+    for i=1:sz
+        netCostMatrix(U(i,1),U(i,2))=1;%Since its a spanning tree, and is only garanted that the sum of the cost of the paths is minimum, not one path
+    end
+
+% Out of the loops, find paths out of spanning tree
+paths=nodeDisjointNaiveDijkstra(netCostMatrix,source,dest,N,true);
+
+end
+end
+
+function [U, stop]=iterationdisjointpair(U, netCostMatrix, source, dest)
+    [sz, v]=size(U);
+    stop=false;
     netCostMatrixchanged = netCostMatrix;
     % Do directed graph towards source in shortest path and with negative costs
     for i=1:sz
@@ -65,7 +100,8 @@ for j=1:N-1
     %Do dijkstra in modified graph
     [nextpath, totalCost]=dijkstra(netCostMatrixchanged, source, dest);
     if isempty(nextpath)
-        break
+        stop=true;
+        return;
     end
      
     %Find Union of both removing interlacing edges
@@ -97,13 +133,4 @@ for j=1:N-1
         U=[U; nextpath(i) nextpath(i+1)];
     end
 end
- 
-    % Get matrix from paths
-    [sz, v]=size(U);
-    netCostMatrix=inf(rows, cols);
-    for i=1:sz
-        netCostMatrix(U(i,1),U(i,2))=1;%Since its a spanning tree, and is only garanted that the sum of the cost of the paths is minimum, not one path
-    end
 
-% Out of the loops, find paths out of spanning tree
-paths=edgeDisjointNaiveDijkstra(netCostMatrix,source,dest,N,true);
