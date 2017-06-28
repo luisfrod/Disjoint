@@ -8,7 +8,7 @@ function G = graphTopology(flagit,flaghosts,topology,varargin)
 %       SpineLeaf
 %       Portland
 %       VL2
-%       Altoona Facebook
+%       AltoonaFacebook
 %
 %   varagin: arguments used depending on the topology chosen:
 %       SpineLeaf: spine, leaf and if flaghosts is true: hostperleaf
@@ -45,7 +45,7 @@ function G = graphTopology(flagit,flaghosts,topology,varargin)
 %           Host layer: 2*dc nodes. Each node connects to only one node in edge 
 %               layer. Since taken symmetric, each node in edge layer has the same
 %               number of hosts. Will be called H1,H2...
-%       Altoona Facebook:
+%       AltoonaFacebook:
 %               m: number of pods of edges
 %               n: number of pods of TOR
 %               if flaghosts is true: one additional for the number of hosts per TOR
@@ -208,7 +208,7 @@ else
         assert(mod(varargin{2},2)==0,'Error, da must be an even number.')
         da=varargin{2};
     else
-        error('Incorrect input arguments: has to be ');
+        error('Incorrect input arguments.');
     end
     
     core=da/2;
