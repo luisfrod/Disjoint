@@ -55,9 +55,14 @@ for j=1:N
     %break;
     %end
     [v, sz]=size(paths{j});
-    for i=2:sz-1
-        netCostMatrix(paths{j}(i),:)= Inf;
-        netCostMatrix(:,paths{j}(i))= Inf;
+    if sz==2
+        netCostMatrix(paths{j}(1),paths{j}(2))= Inf;
+        netCostMatrix(paths{j}(2),paths{j}(1))= Inf;
+    else
+        for i=2:1:sz-1
+            netCostMatrix(paths{j}(i),:)= Inf;
+            netCostMatrix(:,paths{j}(i))= Inf;
+        end
     end
 end
 end

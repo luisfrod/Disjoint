@@ -1,6 +1,9 @@
 function G = graphTopology(flagit,flaghosts,topology,varargin)
-%GRAPHTOPOLY Creates a graph with the atributes given 
-%   depending on the topology chosen
+%GRAPHTOPOLOGY Creates a graph with the atributes given depending on the 
+%topology chosen.
+%
+%   G = graphTopology(flagit,flaghosts,topology,varargin)
+%
 %Inputs:
 %   flagit: flag to have an internet node or not
 %   flaghosts: flag to have node hosts or not
@@ -10,7 +13,7 @@ function G = graphTopology(flagit,flaghosts,topology,varargin)
 %       VL2
 %       AltoonaFacebook
 %
-%   varagin: arguments used depending on the topology chosen:
+%   varargin: arguments used depending on the topology chosen:
 %       SpineLeaf: spine, leaf and if flaghosts is true: hostperleaf
 %           Spine: number of spine nodes. Each node only connects to Internet in upper layer. 
 %           Will be called S1,S2...

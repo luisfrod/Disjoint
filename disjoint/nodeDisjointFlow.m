@@ -11,7 +11,7 @@ function paths = nodeDisjointFlow(G,source,dest,N,matrix)
 %       Output:
 %           paths: Cell array composed of row vectors with the indices of 
 %           the nodes of the path.
-
+%
 %Luis Félix Rodríguez Cano 2017
 
 assert(islogical(matrix));
@@ -33,6 +33,13 @@ end
 
 %netCostMatrix(netCostMatrix==0) = Inf;
 [rows, cols]=size(netCostMatrix);
+
+%Check if source or dest is bigger than the size of the matrix since if it
+%is could be confused with a duplitcate of a node since they are splitted
+if source>rows || cols >rows 
+    paths=cell(1,1);
+    return
+end
 
 splitting_nodes=[1:rows];
 
@@ -70,11 +77,11 @@ splitting_nodes=splitting_nodes(splitting_nodes~=source & splitting_nodes~=dest)
     for j=1:size(paths)
     [v, sz2]=size(paths{j});
     passpath=true(sz2,1);
-    for i=1:sz2
-        if ismember(paths{j}(i),splitting_nodes(:,2))
-            passpath(i)=false;
+        for i=1:sz2
+            if ismember(paths{j}(i),splitting_nodes(:,2))
+                passpath(i)=false;
+            end
         end
-    end
     
     paths{j}=paths{j}(passpath);
     end

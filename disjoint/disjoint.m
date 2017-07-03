@@ -1,7 +1,8 @@
 function paths = disjoint(topology,type,source,dest,N,varargin)
 %DISJOINT Computes disjoint paths between source and dest in network
-%specified.
-
+%specified. 
+%   paths = disjoint(topology,type,source,dest,N,varargin)
+%
 % Inputs:
 %       topology:  type of topology of the network. Can be 'SpineLeaf',
 %           'VL2' or 'other'. Known topology is only valid for computations
@@ -21,7 +22,7 @@ function paths = disjoint(topology,type,source,dest,N,varargin)
 %           there are no more paths the program will stop and will only 
 %           return a list with the paths that exist.
 %       varargin: varies depending on topology:
-
+%
 %           -If topology is 'SpineLeaf':
 %               varargin{1}: mininet, flag that is true if used from
 %                   mininet and false if used from matlab. This has an 
@@ -36,7 +37,7 @@ function paths = disjoint(topology,type,source,dest,N,varargin)
 %           Synthesis for 'SpineLeaf' topology:
 %               disjoint( topology, type, source, dest, N, mininet, spines, leafs)
 %               disjoint( topology, type, source, dest, N, mininet, spines, leafs, not_in_path)
-
+%
 %           -If topology is 'VL2':
 %               varargin{1}: mininet, flag that is true if used from
 %                   mininet and false if used from matlab. This has an 
@@ -56,7 +57,7 @@ function paths = disjoint(topology,type,source,dest,N,varargin)
 %               disjoint( topology, type, source, dest, N, mininet, k)
 %               disjoint( topology, type, source, dest, N, mininet, dc,da)
 %               disjoint(topology,type,source,dest,N,mininet,dc,da,not_in_path)
-
+%
 %           -If topology is 'other':
 %               varargin{1}: G, matlab graph or adjacency matrix.
 %               varargin{2}: matrix, true or false. It indicates if G is 
@@ -67,11 +68,12 @@ function paths = disjoint(topology,type,source,dest,N,varargin)
 %                   all disjoint paths.
 %           Synthesis for 'other' topology:
 %               disjoint( topology, type, source, dest, N, G, matrix, max)
-
+%
 %  Output:
 %       paths: cell array composed of row vectors with the indices of 
-%           the nodes of the path.
-
+%           the nodes of the path. If there is no path it will be an empty
+%           1x1 cell.
+%
 %Luis Félix Rodríguez Cano 2017
 
 if isequal(source,dest)

@@ -11,7 +11,7 @@ function paths=nodeDisjointPair(G,source,dest,N,matrix)
 %       Output:
 %           paths: Cell array composed of row vectors with the indices of 
 %           the nodes of the path.
-
+%
 % Luis Félix Rodríguez Cano, 2017
 
 assert(islogical(matrix));

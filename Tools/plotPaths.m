@@ -2,8 +2,7 @@ function plotPaths(p, paths)
 %PLOTPATHS plots the paths in the plot of a graph
 %   Inputs:
 %       p: plot of a graph
-%       paths: cell array composed of row vectors that represent the a
-%       path.
+%       paths: cell array composed of row vectors that represent the path.
 %
 % Luis Félix Rodríguez Cano 2017
 

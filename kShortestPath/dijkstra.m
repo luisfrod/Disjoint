@@ -13,8 +13,18 @@ function [shortestPath, totalCost] = dijkstra(netCostMatrix, s, d)
 % ++http://www.mathworks.com/matlabcentral/fileexchange/5550-dijkstra-shortest-path-routing
 % Modifications (simplifications) by Meral Shirazipour 9 Dec 2009
 %==============================================================
+%
+% Modified by Luis Rodríguez 1-Jul-17 to increase speed
+
+
 n = size(netCostMatrix,1);
-for i = 1:n
+
+%(Modified Luis Rodríguez 29-Jun-17) Preallocation
+farthestPrevHop(n)=n;
+farthestNextHop(n)=n;
+
+
+for i = 1:n-1
     % initialize the farthest node to be itself;
     farthestPrevHop(i) = i; % used to compute the RTS/CTS range;
     farthestNextHop(i) = i;
@@ -27,24 +37,24 @@ distance(1:n) = inf;    % it stores the shortest distance between each node and 
 parent(1:n) = 0;
 
 distance(s) = 0;
-for i = 1:(n-1),
+for i = 1:(n-1)
     temp = [];
-    for h = 1:n,
+    for h = 1:n
          if ~visited(h)  % in the tree;
              temp=[temp distance(h)];
          else
              temp=[temp inf];
          end
-     end;
+    end
      [t, u] = min(temp);      % it starts from node with the shortest distance to the source;
      visited(u) = true;         % mark it as visited;
-     for v = 1:n,                % for each neighbors of node u;
+     for v = 1:n               % for each neighbors of node u;
          if ( ( netCostMatrix(u, v) + distance(u)) < distance(v) )
              distance(v) = distance(u) + netCostMatrix(u, v);   % update the shortest distance when a shorter shortestPath is found;
              parent(v) = u;     % update its parent;
-         end;             
-     end;
-end;
+         end            
+     end
+end
 
 shortestPath = [];
 if parent(d) ~= 0   % if there is a shortestPath!
@@ -56,14 +66,14 @@ if parent(d) ~= 0   % if there is a shortestPath!
         
         if netCostMatrix(t, farthestPrevHop(t)) < netCostMatrix(t, p)
             farthestPrevHop(t) = p;
-        end;
+        end
         if netCostMatrix(p, farthestNextHop(p)) < netCostMatrix(p, t)
             farthestNextHop(p) = t;
-        end;
+        end
 
         t = p;      
-    end;
-end;
+    end
+end
 
 totalCost = distance(d);
 

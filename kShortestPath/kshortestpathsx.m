@@ -12,6 +12,10 @@ function [paths, cost] = kshortestpathsx(network, stnodes, k, varargin)
 % This function is based on Yen's k-Shortest Path algorithm (1971)
 % This function calls a slightly modified function dijkstra() 
 % by Xiaodong Wang 2004.
+%
+% Modified by Luis Félix Rodríguez Cano 2017 to include additional
+% parameter varargin for use with graphs without weigths. Just set this
+% addtional parameter to 'unweight'.
 
     flag=true;
     if nargin>3
