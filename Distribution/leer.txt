@@ -1,0 +1,16 @@
+Instrucciones instalación Librería Disjointlib en Linux:
+
+La primera vez:
+
+-Usar el archivo MyAppInstaller_web.install para instalar Matlab Runtime de forma automática conectando con el servidor de Matlab cuando se realice la instalación.
+
+-Seguir las instrucciones para cambiar las variables de entorno necesarias.
+
+-Para instalar la librería usar la carpeta for_redistribution_files_only que se encuentra adjunta, no la interna de MyAppInstaller_web.install (corresponde a una versión anterior). Y seguir las instrucciones en su readme.txt.
+
+
+Nota: la instalación en otros Sistemas Operativos es la misma pero el MyAppInstaller_web.install adjunto solo sirve para máquinas Linux. Para generar el mismo archivo para diferente Sistema Operativo se ha de empaquetar la aplicación desde Matlab instalado en el mismo S.O. al que se quiere instalar la librería. Si no también existe la posibilidad de instalarlo manualmente desde la página web de Matlab, aunque esto nos ha dado problemas para el caso de Linux.
+
+Instalaciones sucesivas:
+
+-Si el ordenador ya tiene Matlab Runtime solamente volver a instalar la librería usando la carpeta for_redistribution_files_only generada al empaquetar la librería.
